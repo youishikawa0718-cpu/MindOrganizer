@@ -4,6 +4,9 @@ import Observation
 
 @Observable
 final class TreeEditorViewModel {
+    static let maxNodeCount = 1000
+    static let maxDepth = 20
+
     let tree: ThoughtTree
     private let modelContext: ModelContext
 
@@ -12,6 +15,7 @@ final class TreeEditorViewModel {
     var isAddingNode = false
     var newNodeText = ""
     var addingParent: ThoughtNode?
+    var alertMessage: String?
 
     init(tree: ThoughtTree, modelContext: ModelContext) {
         self.tree = tree
@@ -41,6 +45,10 @@ final class TreeEditorViewModel {
     func addRootNode(text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return }
+        guard tree.nodes.count < Self.maxNodeCount else {
+            alertMessage = "ノード数の上限（\(Self.maxNodeCount)）に達しました"
+            return
+        }
         let node = ThoughtNode(
             text: trimmed,
             sortOrder: tree.rootNodes.count,
@@ -55,6 +63,14 @@ final class TreeEditorViewModel {
     func addChildNode(to parent: ThoughtNode, text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return }
+        guard tree.nodes.count < Self.maxNodeCount else {
+            alertMessage = "ノード数の上限（\(Self.maxNodeCount)）に達しました"
+            return
+        }
+        guard parent.depth + 1 < Self.maxDepth else {
+            alertMessage = "ツリーの深さの上限（\(Self.maxDepth)階層）に達しました"
+            return
+        }
         let node = ThoughtNode(
             text: trimmed,
             sortOrder: parent.children.count,
@@ -153,6 +169,11 @@ final class TreeEditorViewModel {
 
         guard let index = siblings.firstIndex(where: { $0.id == node.id }),
               index > 0 else { return }
+
+        guard node.depth + 1 < Self.maxDepth else {
+            alertMessage = "ツリーの深さの上限（\(Self.maxDepth)階層）に達しました"
+            return
+        }
 
         let newParent = siblings[index - 1]
         node.parent = newParent

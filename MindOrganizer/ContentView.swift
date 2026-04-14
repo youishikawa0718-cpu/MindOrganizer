@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(AppState.self) private var appState
+
     var body: some View {
         NavigationStack {
             HomeView()
@@ -10,6 +12,7 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(AppState())
         .modelContainer(for: [
             ThoughtTree.self,
             ThoughtNode.self,

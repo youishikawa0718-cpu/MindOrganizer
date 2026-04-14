@@ -17,6 +17,9 @@ xcuserdata/
 .build/
 Packages/
 
+# Claude Code
+CLAUDE.local.md
+
 # macOS
 .DS_Store
 *.swp

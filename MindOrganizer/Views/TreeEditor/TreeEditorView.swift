@@ -49,6 +49,14 @@ struct TreeEditorView: View {
         .sheet(isPresented: $showingTagSheet) {
             TagManagementSheet(tree: tree)
         }
+        .alert("制限", isPresented: Binding(
+            get: { viewModel?.alertMessage != nil },
+            set: { if !$0 { viewModel?.alertMessage = nil } }
+        )) {
+            Button("OK") { viewModel?.alertMessage = nil }
+        } message: {
+            Text(viewModel?.alertMessage ?? "")
+        }
     }
 
     // MARK: - Tree Content
