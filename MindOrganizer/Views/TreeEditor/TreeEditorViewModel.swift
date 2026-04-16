@@ -157,6 +157,92 @@ final class TreeEditorViewModel {
         addingParent = nil
     }
 
+    // MARK: - Drag & Drop
+
+    func moveNodes(from source: IndexSet, to destination: Int) {
+        guard let sourceIndex = source.first,
+              sourceIndex < flatNodes.count else { return }
+
+        let movedNode = flatNodes[sourceIndex]
+        let oldParent = movedNode.parent
+
+        // フラット配列上で移動をシミュレート
+        var temp = flatNodes
+        temp.move(fromOffsets: source, toOffset: destination)
+
+        guard let newIndex = temp.firstIndex(where: { $0.id == movedNode.id }) else { return }
+
+        // 移動先の位置から新しい親を決定
+        let newParent = findNewParent(for: movedNode, at: newIndex, in: temp)
+
+        // 深さ制約のバリデーション
+        let newDepth = (newParent?.depth ?? -1) + 1
+        let subtreeMaxDepth = maxDepthInSubtree(of: movedNode)
+        let depthDelta = newDepth - movedNode.depth
+        if subtreeMaxDepth + depthDelta >= Self.maxDepth {
+            alertMessage = "移動先ではツリーの深さの上限（\(Self.maxDepth)階層）を超えます"
+            return
+        }
+
+        // 親とdepthを更新
+        movedNode.parent = newParent
+        movedNode.depth = newDepth
+        updateChildDepths(of: movedNode)
+
+        // sortOrderを再計算
+        renumberChildrenByFlatOrder(parent: newParent, flatArray: temp)
+        if oldParent?.id != newParent?.id {
+            renumberChildrenByFlatOrder(parent: oldParent, flatArray: temp)
+        }
+
+        tree.updatedAt = Date()
+        rebuildFlatNodes()
+    }
+
+    private func findNewParent(
+        for node: ThoughtNode,
+        at index: Int,
+        in flatArray: [ThoughtNode]
+    ) -> ThoughtNode? {
+        if index == 0 { return nil }
+
+        let targetDepth = node.depth - 1
+        if targetDepth < 0 { return nil }
+
+        for i in stride(from: index - 1, through: 0, by: -1) {
+            let candidate = flatArray[i]
+            if candidate.id == node.id { continue }
+            if candidate.depth == targetDepth {
+                return candidate
+            }
+            if candidate.depth < targetDepth {
+                return nil
+            }
+        }
+        return nil
+    }
+
+    private func maxDepthInSubtree(of node: ThoughtNode) -> Int {
+        var maxD = node.depth
+        for child in node.children {
+            maxD = max(maxD, maxDepthInSubtree(of: child))
+        }
+        return maxD
+    }
+
+    private func renumberChildrenByFlatOrder(parent: ThoughtNode?, flatArray: [ThoughtNode]) {
+        let targetDepth = (parent?.depth ?? -1) + 1
+        let parentId = parent?.id
+
+        var order = 0
+        for node in flatArray {
+            if node.depth == targetDepth && node.parent?.id == parentId {
+                node.sortOrder = order
+                order += 1
+            }
+        }
+    }
+
     // MARK: - Indent / Outdent
 
     func indentNode(_ node: ThoughtNode) {
