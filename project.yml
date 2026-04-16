@@ -28,6 +28,7 @@ targets:
         product: GoogleSignIn
       - package: GoogleSignIn
         product: GoogleSignInSwift
+      - target: MindOrganizerWidgetExtension
     settings:
       base:
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
@@ -49,3 +50,40 @@ targets:
       properties:
         com.apple.developer.applesignin:
           - Default
+        com.apple.security.application-groups:
+          - group.com.yukiishikawa.MindOrganizer
+
+  MindOrganizerWidgetExtension:
+    type: app-extension
+    platform: iOS
+    info:
+      path: MindOrganizerWidget/Info.plist
+      properties:
+        CFBundleDisplayName: MindOrganizer Widget
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    sources:
+      - MindOrganizerWidget
+      - path: MindOrganizer/Models
+        excludes:
+          - "FirestoreDTO/**"
+        createIntermediateGroups: true
+      - path: MindOrganizer/App/SharedModelContainer.swift
+        createIntermediateGroups: true
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: MindOrganizer Widget
+        INFOPLIST_KEY_NSHumanReadableCopyright: ""
+        PRODUCT_BUNDLE_IDENTIFIER: com.yukiishikawa.MindOrganizer.Widget
+        GENERATE_INFOPLIST_FILE: NO
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        DEVELOPMENT_TEAM: ""
+        SWIFT_VERSION: "6.0"
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks"
+    entitlements:
+      path: MindOrganizerWidget/MindOrganizerWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.yukiishikawa.MindOrganizer

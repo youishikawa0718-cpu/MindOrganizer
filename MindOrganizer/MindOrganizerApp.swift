@@ -18,11 +18,6 @@ struct MindOrganizerApp: App {
                 .environment(appState)
                 .preferredColorScheme(appearance.colorScheme)
         }
-        .modelContainer(for: [
-            ThoughtTree.self,
-            ThoughtNode.self,
-            Tag.self,
-            Snapshot.self,
-        ])
+        .modelContainer(SharedModelContainer.container)
     }
 }
