@@ -2,10 +2,15 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(AppState.self) private var appState
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     var body: some View {
-        NavigationStack {
-            HomeView()
+        if !hasCompletedOnboarding {
+            OnboardingView()
+        } else {
+            NavigationStack {
+                HomeView()
+            }
         }
     }
 }
