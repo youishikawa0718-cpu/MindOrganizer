@@ -8,6 +8,8 @@ struct TreeEditorView: View {
     @State private var editingNode: ThoughtNode?
     @State private var showingTagSheet = false
     @State private var showsMindMap = false
+    @State private var showingSnapshots = false
+    @State private var exportText: String?
 
     var body: some View {
         Group {
@@ -50,6 +52,16 @@ struct TreeEditorView: View {
                     } label: {
                         Label("ルートノードを追加", systemImage: "plus.circle")
                     }
+                    Button {
+                        showingSnapshots = true
+                    } label: {
+                        Label("スナップショット", systemImage: "camera")
+                    }
+                    Button {
+                        exportText = ExportService.exportAsMarkdown(tree: tree)
+                    } label: {
+                        Label("マークダウンで共有", systemImage: "square.and.arrow.up")
+                    }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
@@ -67,6 +79,17 @@ struct TreeEditorView: View {
         }
         .sheet(isPresented: $showingTagSheet) {
             TagManagementSheet(tree: tree)
+        }
+        .sheet(isPresented: $showingSnapshots) {
+            SnapshotListView(tree: tree)
+        }
+        .sheet(isPresented: Binding(
+            get: { exportText != nil },
+            set: { if !$0 { exportText = nil } }
+        )) {
+            if let text = exportText {
+                ShareSheet(items: [text])
+            }
         }
         .alert("制限", isPresented: Binding(
             get: { viewModel?.alertMessage != nil },
