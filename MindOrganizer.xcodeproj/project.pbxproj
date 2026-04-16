@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		0AA4A5A5ECABC44CDB7B2EBE /* AuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2103C09B2100FEB1E7A9E3 /* AuthRepository.swift */; };
 		0D136FECDF72582B6811AD17 /* NodeRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178FA763AEA033DC0AAE6D7 /* NodeRowView.swift */; };
+		AA0001001000000100000001 /* MindMapLayoutEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002001000000100000001 /* MindMapLayoutEngine.swift */; };
+		AA0001001000000100000002 /* MindMapNodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002001000000100000002 /* MindMapNodeView.swift */; };
+		AA0001001000000100000003 /* MindMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002001000000100000003 /* MindMapView.swift */; };
 		1348D9D0D68D8636485ACD44 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 771D0A5C4C833EAB5F05DC79 /* GoogleSignInSwift */; };
 		14BADC05ECD56636D669D3B4 /* ThoughtRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C6AEC7302B0A07FAD893C7 /* ThoughtRepositoryProtocol.swift */; };
 		1EA6F786E2A7B516D8AC4346 /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D5395268FA7412B5930C63 /* PreviewData.swift */; };
@@ -53,6 +56,9 @@
 		3D2103C09B2100FEB1E7A9E3 /* AuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRepository.swift; sourceTree = "<group>"; };
 		48339AEF4C56275DC799F75C /* ThoughtNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThoughtNode.swift; sourceTree = "<group>"; };
 		5178FA763AEA033DC0AAE6D7 /* NodeRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeRowView.swift; sourceTree = "<group>"; };
+		AA0002001000000100000001 /* MindMapLayoutEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindMapLayoutEngine.swift; sourceTree = "<group>"; };
+		AA0002001000000100000002 /* MindMapNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindMapNodeView.swift; sourceTree = "<group>"; };
+		AA0002001000000100000003 /* MindMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindMapView.swift; sourceTree = "<group>"; };
 		67CAEA17836EE4BC5E09149D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6A501B5669CC49D65D76A9C7 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		6E8F360A893A8FC4BEA7D1A9 /* MindOrganizer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MindOrganizer.entitlements; sourceTree = "<group>"; };
@@ -227,6 +233,9 @@
 			isa = PBXGroup;
 			children = (
 				82E41F74E64B2220E6DF2955 /* NodeEditSheet.swift */,
+				AA0002001000000100000001 /* MindMapLayoutEngine.swift */,
+				AA0002001000000100000002 /* MindMapNodeView.swift */,
+				AA0002001000000100000003 /* MindMapView.swift */,
 				5178FA763AEA033DC0AAE6D7 /* NodeRowView.swift */,
 				AC7DFE69D3A0C5FC618D073D /* TagManagementSheet.swift */,
 				776652AF8652E4C8A647AB10 /* TreeEditorView.swift */,
@@ -354,6 +363,9 @@
 				63358AF5AC1C9402931C8B0A /* HomeView.swift in Sources */,
 				B2E29610A116BCD753BE9AB2 /* MindOrganizerApp.swift in Sources */,
 				2F015B2FA8EB4B9BBD397314 /* NodeEditSheet.swift in Sources */,
+				AA0001001000000100000001 /* MindMapLayoutEngine.swift in Sources */,
+				AA0001001000000100000002 /* MindMapNodeView.swift in Sources */,
+				AA0001001000000100000003 /* MindMapView.swift in Sources */,
 				0D136FECDF72582B6811AD17 /* NodeRowView.swift in Sources */,
 				1EA6F786E2A7B516D8AC4346 /* PreviewData.swift in Sources */,
 				78D5A581ACD3052B484FDFB4 /* RemoteThoughtRepository.swift in Sources */,

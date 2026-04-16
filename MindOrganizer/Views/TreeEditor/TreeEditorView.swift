@@ -7,6 +7,7 @@ struct TreeEditorView: View {
     @State private var viewModel: TreeEditorViewModel?
     @State private var editingNode: ThoughtNode?
     @State private var showingTagSheet = false
+    @State private var showsMindMap = false
 
     var body: some View {
         Group {
@@ -19,11 +20,29 @@ struct TreeEditorView: View {
         .navigationTitle(tree.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if showsMindMap {
+                    Button {
+                        withAnimation { showsMindMap = false }
+                    } label: {
+                        Image(systemName: "list.bullet")
+                    }
+                } else {
+                    EditButton()
+                }
+            }
             ToolbarItemGroup(placement: .primaryAction) {
                 Button {
                     showingTagSheet = true
                 } label: {
                     Image(systemName: "tag")
+                }
+                if !showsMindMap {
+                    Button {
+                        withAnimation { showsMindMap = true }
+                    } label: {
+                        Image(systemName: "circle.grid.cross")
+                    }
                 }
                 Menu {
                     Button {
@@ -67,6 +86,14 @@ struct TreeEditorView: View {
             EmptyNodeStateView {
                 vm.startAddingChild(to: nil)
             }
+        } else if showsMindMap {
+            MindMapView(
+                tree: tree,
+                onEditNode: { editingNode = $0 },
+                onToggleCollapse: { node in
+                    vm.toggleCollapse(node)
+                }
+            )
         } else {
             VStack(spacing: 0) {
                 List {
@@ -86,6 +113,11 @@ struct TreeEditorView: View {
                             bottom: 4,
                             trailing: 16
                         ))
+                    }
+                    .onMove { source, destination in
+                        withAnimation {
+                            vm.moveNodes(from: source, to: destination)
+                        }
                     }
                 }
                 .listStyle(.plain)
