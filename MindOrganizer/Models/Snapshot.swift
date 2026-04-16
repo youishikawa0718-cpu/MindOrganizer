@@ -18,3 +18,4 @@ final class Snapshot {
         self.tree = tree
     }
 }
+
