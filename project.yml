@@ -29,6 +29,13 @@ targets:
       - package: GoogleSignIn
         product: GoogleSignInSwift
       - target: MindOrganizerWidgetExtension
+    info:
+      path: MindOrganizer/Info.plist
+      properties:
+        GIDClientID: 382107919847-pv5seos3pkie4770tqpt55s94b3re0e1.apps.googleusercontent.com
+        CFBundleURLTypes:
+          - CFBundleURLSchemes:
+              - com.googleusercontent.apps.382107919847-pv5seos3pkie4770tqpt55s94b3re0e1
     settings:
       base:
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
