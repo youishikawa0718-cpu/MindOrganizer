@@ -11,12 +11,27 @@ struct TreeEditorView: View {
     @State private var showingSnapshots = false
     @State private var exportText: String?
 
+    @AppStorage("accentKey") private var accentKey: String = "indigo"
+
+    private var maxDepth: Int {
+        (tree.nodes.map(\.depth).max() ?? -1) + 1
+    }
+
+    private var allCollapsed: Bool {
+        let branches = tree.nodes.filter { !$0.children.isEmpty }
+        return !branches.isEmpty && branches.allSatisfy { $0.isCollapsed }
+    }
+
     var body: some View {
-        Group {
-            if let vm = viewModel {
-                treeContent(vm)
-            } else {
-                ProgressView()
+        ZStack {
+            Color.moBg.ignoresSafeArea()
+
+            Group {
+                if let vm = viewModel {
+                    treeContent(vm)
+                } else {
+                    ProgressView()
+                }
             }
         }
         .navigationTitle(tree.title)
@@ -27,10 +42,13 @@ struct TreeEditorView: View {
                     Button {
                         withAnimation { showsMindMap = false }
                     } label: {
-                        Image(systemName: "list.bullet")
+                        Image(systemName: "list.bullet.indent")
+                            .foregroundStyle(Color.moAccent(accentKey))
                     }
+                    .accessibilityLabel("リスト表示に切り替え")
                 } else {
                     EditButton()
+                        .tint(Color.moAccent(accentKey))
                 }
             }
             ToolbarItemGroup(placement: .primaryAction) {
@@ -38,13 +56,17 @@ struct TreeEditorView: View {
                     showingTagSheet = true
                 } label: {
                     Image(systemName: "tag")
+                        .foregroundStyle(Color.moInk)
                 }
+                .accessibilityLabel("タグを管理")
                 if !showsMindMap {
                     Button {
                         withAnimation { showsMindMap = true }
                     } label: {
-                        Image(systemName: "circle.grid.cross")
+                        Image(systemName: "circle.hexagongrid.fill")
+                            .foregroundStyle(Color.moInk)
                     }
+                    .accessibilityLabel("マインドマップに切り替え")
                 }
                 Menu {
                     Button {
@@ -63,19 +85,27 @@ struct TreeEditorView: View {
                         Label("マークダウンで共有", systemImage: "square.and.arrow.up")
                     }
                 } label: {
-                    Image(systemName: "ellipsis.circle")
+                    Image(systemName: "ellipsis")
+                        .foregroundStyle(Color.moInk)
                 }
+                .accessibilityLabel("その他のオプション")
             }
         }
+        .toolbarBackground(Color.moBg, for: .navigationBar)
         .onAppear {
             if viewModel == nil {
                 viewModel = TreeEditorViewModel(tree: tree, modelContext: modelContext)
             }
         }
         .sheet(item: $editingNode) { node in
-            NodeEditSheet(node: node) { text, note in
-                viewModel?.updateNode(node, text: text, note: note)
-            }
+            NodeEditSheet(
+                node: node,
+                onSave: { text, note in
+                    viewModel?.updateNode(node, text: text, note: note)
+                },
+                onAddChild: { viewModel?.startAddingChild(to: node) },
+                onDelete: { viewModel?.deleteNode(node) }
+            )
         }
         .sheet(isPresented: $showingTagSheet) {
             TagManagementSheet(tree: tree)
@@ -119,88 +149,183 @@ struct TreeEditorView: View {
             )
         } else {
             VStack(spacing: 0) {
-                List {
-                    ForEach(vm.flatNodes) { node in
-                        NodeRowView(
-                            node: node,
-                            onToggleCollapse: { vm.toggleCollapse(node) },
-                            onAddChild: { vm.startAddingChild(to: node) },
-                            onEdit: { editingNode = node },
-                            onDelete: { vm.deleteNode(node) },
-                            onIndent: { vm.indentNode(node) },
-                            onOutdent: { vm.outdentNode(node) }
-                        )
-                        .listRowInsets(EdgeInsets(
-                            top: 4,
-                            leading: CGFloat(node.depth) * 24 + 16,
-                            bottom: 4,
-                            trailing: 16
-                        ))
-                    }
-                    .onMove { source, destination in
-                        withAnimation {
-                            vm.moveNodes(from: source, to: destination)
-                        }
-                    }
-                }
-                .listStyle(.plain)
-
+                statsHeader(vm)
+                nodeList(vm)
                 if vm.isAddingNode {
                     addNodeBar(vm)
                 }
-
                 bottomToolbar(vm)
             }
         }
     }
 
+    private func statsHeader(_ vm: TreeEditorViewModel) -> some View {
+        HStack(alignment: .center) {
+            MoKicker(text: "\(vm.flatNodes.count) NODES · \(maxDepth) LEVELS")
+            Spacer()
+            if tree.nodes.contains(where: { !$0.children.isEmpty }) {
+                Button {
+                    toggleAllCollapse(vm)
+                } label: {
+                    Text(allCollapsed ? "すべて展開" : "すべて折りたたむ")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(Color.moAccent(accentKey))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 12)
+        .padding(.bottom, 8)
+    }
+
+    private func toggleAllCollapse(_ vm: TreeEditorViewModel) {
+        let target = !allCollapsed
+        for node in tree.nodes where !node.children.isEmpty {
+            node.isCollapsed = target
+        }
+        withAnimation(.easeInOut(duration: 0.2)) {
+            vm.rebuildFlatNodes()
+        }
+    }
+
+    private func nodeList(_ vm: TreeEditorViewModel) -> some View {
+        List {
+            ForEach(vm.flatNodes) { node in
+                NodeRowView(
+                    node: node,
+                    onToggleCollapse: { vm.toggleCollapse(node) },
+                    onAddChild: { vm.startAddingChild(to: node) },
+                    onEdit: { editingNode = node },
+                    onDelete: { vm.deleteNode(node) },
+                    onIndent: { vm.indentNode(node) },
+                    onOutdent: { vm.outdentNode(node) }
+                )
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.moBg)
+                .listRowSeparator(.hidden)
+            }
+            .onMove { source, destination in
+                withAnimation {
+                    vm.moveNodes(from: source, to: destination)
+                }
+            }
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.moBg)
+        .environment(\.defaultMinListRowHeight, 0)
+    }
+
     // MARK: - Add Node Bar
 
     private func addNodeBar(_ vm: TreeEditorViewModel) -> some View {
-        HStack {
-            if let parent = vm.addingParent {
-                Text("↳ \(parent.text)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
-            TextField("ノードを入力", text: Bindable(vm).newNodeText)
-                .textFieldStyle(.roundedBorder)
-                .onSubmit {
-                    vm.confirmAddNode()
+        VStack(spacing: 0) {
+            Rectangle()
+                .fill(Color.moHair)
+                .frame(height: 1)
+            HStack(spacing: 10) {
+                if let parent = vm.addingParent {
+                    HStack(spacing: 4) {
+                        Image(systemName: "arrow.turn.down.right")
+                            .font(.system(size: 11))
+                            .foregroundStyle(Color.moInkFaint)
+                        Text(parent.text)
+                            .font(.system(size: 12))
+                            .foregroundStyle(Color.moInkMuted)
+                            .lineLimit(1)
+                    }
                 }
-            Button {
-                vm.confirmAddNode()
-            } label: {
-                Image(systemName: "checkmark.circle.fill")
+                TextField("ノードを入力", text: Bindable(vm).newNodeText)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 15))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.moBgElev2)
+                    )
+                    .onSubmit {
+                        vm.confirmAddNode()
+                    }
+                Button {
+                    vm.confirmAddNode()
+                } label: {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .font(.system(size: 24))
+                        .foregroundStyle(vm.newNodeText.trimmingCharacters(in: .whitespaces).isEmpty ? Color.moInkFaint : Color.moAccent(accentKey))
+                }
+                .disabled(vm.newNodeText.trimmingCharacters(in: .whitespaces).isEmpty)
+                Button {
+                    vm.cancelAddNode()
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(Color.moInkMuted)
+                        .frame(width: 24, height: 24)
+                }
             }
-            .disabled(vm.newNodeText.trimmingCharacters(in: .whitespaces).isEmpty)
-            Button {
-                vm.cancelAddNode()
-            } label: {
-                Image(systemName: "xmark.circle")
-            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(Color.moBgElev)
         }
-        .padding()
-        .background(.bar)
     }
 
     // MARK: - Bottom Toolbar
 
     private func bottomToolbar(_ vm: TreeEditorViewModel) -> some View {
-        HStack {
-            Button {
-                vm.startAddingChild(to: nil)
-            } label: {
-                Label("ノードを追加", systemImage: "plus.circle")
+        ZStack(alignment: .top) {
+            LinearGradient(
+                colors: [Color.moBg.opacity(0), Color.moBg],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(height: 16)
+            .offset(y: -16)
+            .allowsHitTesting(false)
+
+            HStack(spacing: 10) {
+                Button {
+                    vm.startAddingChild(to: nil)
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 14, weight: .semibold))
+                        Text("ノードを追加")
+                            .font(.system(size: 15, weight: .semibold))
+                    }
+                    .foregroundStyle(Color.moBg)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color.moInk)
+                    )
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    showingSnapshots = true
+                } label: {
+                    Image(systemName: "camera")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundStyle(Color.moInk)
+                        .frame(width: 44, height: 44)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Color.moBgElev)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .strokeBorder(Color.moHair, lineWidth: 1)
+                        )
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("スナップショット")
             }
-            Spacer()
-            Text("\(vm.flatNodes.count)個のノード")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(Color.moBg)
         }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
-        .background(.bar)
     }
 }

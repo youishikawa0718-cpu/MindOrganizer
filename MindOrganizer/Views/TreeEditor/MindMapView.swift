@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// 放射状マインドマップ表示
 struct MindMapView: View {
     let tree: ThoughtTree
     let onEditNode: (ThoughtNode) -> Void
@@ -11,7 +10,12 @@ struct MindMapView: View {
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     private let layoutEngine = MindMapLayoutEngine()
+    private let minScale: CGFloat = 0.3
+    private let maxScale: CGFloat = 3.0
+    private let dotSpacing: CGFloat = 24
 
     var body: some View {
         GeometryReader { geometry in
@@ -27,34 +31,12 @@ struct MindMapView: View {
             )
 
             ZStack {
-                // 接続線の描画
-                Canvas { context, _ in
-                    for layout in layouts {
-                        guard let parentId = layout.parentId,
-                              let parentLayout = layoutMap[parentId] else { continue }
+                Color.moBg
 
-                        let from = transformedPoint(parentLayout.position, center: center)
-                        let to = transformedPoint(layout.position, center: center)
+                dotGrid(size: geometry.size)
 
-                        var path = Path()
-                        // ベジェ曲線で接続
-                        let midX = (from.x + to.x) / 2
-                        path.move(to: from)
-                        path.addCurve(
-                            to: to,
-                            control1: CGPoint(x: midX, y: from.y),
-                            control2: CGPoint(x: midX, y: to.y)
-                        )
+                connections(layouts: layouts, layoutMap: layoutMap, center: center)
 
-                        context.stroke(
-                            path,
-                            with: .color(.secondary.opacity(0.4)),
-                            lineWidth: 1.5
-                        )
-                    }
-                }
-
-                // ノードの描画
                 ForEach(layouts, id: \.nodeId) { layout in
                     if let node = nodeMap[layout.nodeId] {
                         let pos = transformedPoint(layout.position, center: center)
@@ -72,6 +54,127 @@ struct MindMapView: View {
             .contentShape(Rectangle())
             .gesture(dragGesture)
             .gesture(magnifyGesture)
+            .overlay(alignment: .bottomTrailing) {
+                zoomPill
+                    .padding(.trailing, 16)
+                    .padding(.bottom, 16)
+            }
+        }
+    }
+
+    // MARK: - Dot Grid
+
+    private func dotGrid(size: CGSize) -> some View {
+        Canvas { context, canvasSize in
+            let spacing = dotSpacing * max(scale, 0.5)
+            guard spacing > 4 else { return }
+            let startX = offset.width.truncatingRemainder(dividingBy: spacing)
+            let startY = offset.height.truncatingRemainder(dividingBy: spacing)
+            let dotSize: CGFloat = 1.2
+
+            var x = startX - spacing
+            while x < canvasSize.width + spacing {
+                var y = startY - spacing
+                while y < canvasSize.height + spacing {
+                    let rect = CGRect(
+                        x: x - dotSize / 2,
+                        y: y - dotSize / 2,
+                        width: dotSize,
+                        height: dotSize
+                    )
+                    context.fill(Path(ellipseIn: rect), with: .color(Color.moHair))
+                    y += spacing
+                }
+                x += spacing
+            }
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
+    // MARK: - Connections
+
+    private func connections(
+        layouts: [NodeLayout],
+        layoutMap: [UUID: NodeLayout],
+        center: CGPoint
+    ) -> some View {
+        Canvas { context, _ in
+            for layout in layouts {
+                guard let parentId = layout.parentId,
+                      let parentLayout = layoutMap[parentId] else { continue }
+
+                let from = transformedPoint(parentLayout.position, center: center)
+                let to = transformedPoint(layout.position, center: center)
+
+                var path = Path()
+                let midX = (from.x + to.x) / 2
+                path.move(to: from)
+                path.addCurve(
+                    to: to,
+                    control1: CGPoint(x: midX, y: from.y),
+                    control2: CGPoint(x: midX, y: to.y)
+                )
+
+                context.stroke(
+                    path,
+                    with: .color(Color.moHairStrong),
+                    lineWidth: 1.2
+                )
+            }
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
+    // MARK: - Zoom Pill
+
+    private var zoomPill: some View {
+        VStack(spacing: 1) {
+            zoomButton(symbol: "plus") {
+                setScale(scale * 1.2)
+            }
+            Rectangle()
+                .fill(Color.moHair)
+                .frame(height: 1)
+                .frame(width: 28)
+            zoomButton(symbol: "minus") {
+                setScale(scale / 1.2)
+            }
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.moBgElev)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(Color.moHair, lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 2)
+    }
+
+    private func zoomButton(symbol: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(Color.moInk)
+                .frame(width: 36, height: 36)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(symbol == "plus" ? "拡大" : "縮小")
+    }
+
+    private func setScale(_ newScale: CGFloat) {
+        let clamped = min(max(newScale, minScale), maxScale)
+        if reduceMotion {
+            scale = clamped
+            lastScale = clamped
+        } else {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                scale = clamped
+                lastScale = clamped
+            }
         }
     }
 
@@ -103,7 +206,7 @@ struct MindMapView: View {
         MagnifyGesture()
             .onChanged { value in
                 let newScale = lastScale * value.magnification
-                scale = min(max(newScale, 0.3), 3.0)
+                scale = min(max(newScale, minScale), maxScale)
             }
             .onEnded { _ in
                 lastScale = scale
