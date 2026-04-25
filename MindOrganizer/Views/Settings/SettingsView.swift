@@ -311,7 +311,7 @@ struct SettingsView: View {
                     .foregroundStyle(Color.moInkMuted)
             }
             divider
-            Link(destination: URL(string: "https://yukiishikawa.github.io/mindorganizer-privacy")!) {
+            Link(destination: URL(string: "https://youishikawa0718-cpu.github.io/mindorganizer-privacy")!) {
                 row {
                     Text("プライバシーポリシー").foregroundStyle(Color.moInk)
                     Spacer()
