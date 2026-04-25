@@ -17,6 +17,12 @@ xcuserdata/
 .build/
 Packages/
 
+# Build output
+build/
+
+# Generated Info.plist (xcodegen)
+MindOrganizer/Info.plist
+
 # Claude Code
 CLAUDE.local.md
 

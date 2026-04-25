@@ -17,6 +17,7 @@ struct MindOrganizerApp: App {
             ContentView()
                 .environment(appState)
                 .preferredColorScheme(appearance.colorScheme)
+                .dynamicTypeSize(.xSmall ... .accessibility2)
         }
         .modelContainer(SharedModelContainer.container)
     }
