@@ -441,10 +441,12 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					9704BF774FE141AE9DF22A31 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = H4MN27V688;
+						ProvisioningStyle = Automatic;
 					};
 					A7E78D7698F02F30F2F049F1 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = H4MN27V688;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -569,8 +571,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MindOrganizer/MindOrganizer.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = H4MN27V688;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MindOrganizer/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -654,8 +657,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MindOrganizer/MindOrganizer.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = H4MN27V688;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MindOrganizer/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -680,8 +684,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = MindOrganizerWidget/MindOrganizerWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = H4MN27V688;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MindOrganizerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "MindOrganizer Widget";
@@ -762,8 +767,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = MindOrganizerWidget/MindOrganizerWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = H4MN27V688;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MindOrganizerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "MindOrganizer Widget";
