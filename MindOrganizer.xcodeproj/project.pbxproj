@@ -441,11 +441,11 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					9704BF774FE141AE9DF22A31 = {
-						DevelopmentTeam = H4MN27V688;
+						DevelopmentTeam = S22J52XQ9P;
 						ProvisioningStyle = Automatic;
 					};
 					A7E78D7698F02F30F2F049F1 = {
-						DevelopmentTeam = H4MN27V688;
+						DevelopmentTeam = S22J52XQ9P;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -573,7 +573,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H4MN27V688;
+				DEVELOPMENT_TEAM = S22J52XQ9P;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MindOrganizer/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -659,7 +659,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H4MN27V688;
+				DEVELOPMENT_TEAM = S22J52XQ9P;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MindOrganizer/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -686,7 +686,7 @@
 				CODE_SIGN_ENTITLEMENTS = MindOrganizerWidget/MindOrganizerWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H4MN27V688;
+				DEVELOPMENT_TEAM = S22J52XQ9P;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MindOrganizerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "MindOrganizer Widget";
@@ -769,7 +769,7 @@
 				CODE_SIGN_ENTITLEMENTS = MindOrganizerWidget/MindOrganizerWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H4MN27V688;
+				DEVELOPMENT_TEAM = S22J52XQ9P;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MindOrganizerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "MindOrganizer Widget";
