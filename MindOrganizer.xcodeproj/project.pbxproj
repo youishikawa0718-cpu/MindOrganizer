@@ -572,7 +572,7 @@
 				CODE_SIGN_ENTITLEMENTS = MindOrganizer/MindOrganizer.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = S22J52XQ9P;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MindOrganizer/Info.plist;
@@ -657,7 +657,7 @@
 				CODE_SIGN_ENTITLEMENTS = MindOrganizer/MindOrganizer.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = S22J52XQ9P;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MindOrganizer/Info.plist;
@@ -683,7 +683,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = MindOrganizerWidget/MindOrganizerWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = S22J52XQ9P;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MindOrganizerWidget/Info.plist;
@@ -766,7 +766,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = MindOrganizerWidget/MindOrganizerWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = S22J52XQ9P;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MindOrganizerWidget/Info.plist;
