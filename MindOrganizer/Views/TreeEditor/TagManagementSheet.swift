@@ -14,16 +14,17 @@ struct TagManagementSheet: View {
         NavigationStack {
             List {
                 Section("新しいタグ") {
-                    HStack {
-                        TextField("タグ名", text: $newTagName)
-                        colorPicker
-                        Button {
-                            createTag()
-                        } label: {
-                            Image(systemName: "plus.circle.fill")
-                        }
-                        .disabled(newTagName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    TextField("タグ名", text: $newTagName)
+
+                    colorPalette
+
+                    Button {
+                        createTag()
+                    } label: {
+                        Label("タグを追加", systemImage: "plus.circle.fill")
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    .disabled(newTagName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
 
                 Section("タグを選択") {
@@ -61,27 +62,32 @@ struct TagManagementSheet: View {
         .presentationDetents([.medium, .large])
     }
 
-    private var colorPicker: some View {
-        Menu {
+    private var colorPalette: some View {
+        HStack(spacing: 10) {
             ForEach(Color.tagColors, id: \.self) { hex in
+                let isSelected = hex == selectedColorHex
                 Button {
                     selectedColorHex = hex
                 } label: {
-                    HStack {
-                        Circle()
-                            .fill(Color(hex: hex))
-                            .frame(width: 16, height: 16)
-                        if hex == selectedColorHex {
-                            Image(systemName: "checkmark")
+                    Circle()
+                        .fill(Color(hex: hex))
+                        .frame(width: 28, height: 28)
+                        .overlay {
+                            Circle()
+                                .strokeBorder(
+                                    isSelected ? Color.moInk : Color.moHair,
+                                    lineWidth: isSelected ? 2.5 : 1
+                                )
+                                .padding(isSelected ? -2 : 0)
                         }
-                    }
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel("色 \(hex)")
+                .accessibilityAddTraits(isSelected ? .isSelected : [])
             }
-        } label: {
-            Circle()
-                .fill(Color(hex: selectedColorHex))
-                .frame(width: 24, height: 24)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, 4)
     }
 
     private func createTag() {
