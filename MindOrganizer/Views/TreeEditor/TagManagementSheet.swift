@@ -63,31 +63,30 @@ struct TagManagementSheet: View {
     }
 
     private var colorPalette: some View {
-        HStack(spacing: 10) {
-            ForEach(Color.tagColors, id: \.self) { hex in
-                let isSelected = hex == selectedColorHex
-                Button {
-                    selectedColorHex = hex
-                } label: {
+        // List + Button(.plain) の組み合わせで Circle が描画されない iOS 17 不具合の回避策として
+        // onTapGesture でハンドリングする。横幅不足は ScrollView で吸収。
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(Color.tagColors, id: \.self) { hex in
+                    let isSelected = hex == selectedColorHex
                     Circle()
                         .fill(Color(hex: hex))
-                        .frame(width: 28, height: 28)
-                        .overlay {
+                        .frame(width: 32, height: 32)
+                        .overlay(
                             Circle()
                                 .strokeBorder(
                                     isSelected ? Color.moInk : Color.moHair,
-                                    lineWidth: isSelected ? 2.5 : 1
+                                    lineWidth: isSelected ? 3 : 1
                                 )
-                                .padding(isSelected ? -2 : 0)
-                        }
+                        )
+                        .contentShape(Circle())
+                        .onTapGesture { selectedColorHex = hex }
+                        .accessibilityLabel("色 \(hex)")
+                        .accessibilityAddTraits(isSelected ? .isSelected : [])
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("色 \(hex)")
-                .accessibilityAddTraits(isSelected ? .isSelected : [])
             }
+            .padding(.vertical, 4)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 4)
     }
 
     private func createTag() {
