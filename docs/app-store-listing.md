@@ -124,7 +124,7 @@ MindOrganizer がその最初の一歩を支えます。
 頭の中のモヤモヤをツリーで整理し、思考をクリアに保つお手伝いをします。
 ```
 
-### What's New — 1.0 (Build 5)
+### What's New — 1.0.1 (Build 5)
 ```
 不具合修正:
 ・タグ作成画面で色の選択肢が表示されない問題を修正しました
@@ -228,7 +228,7 @@ Initial release. Thank you for trying MindOrganizer.
 A calm, local-first way to turn your scattered thoughts into clear trees.
 ```
 
-### What's New — 1.0 (Build 5)
+### What's New — 1.0.1 (Build 5)
 ```
 Bug fixes:
 - Fixed an issue where color options were not displayed on the tag creation screen
